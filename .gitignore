@@ -1,0 +1,21 @@
+# Environment and credentials — never commit
+.env
+
+# Runtime state
+previous_ids.json
+.browser_profile/
+
+# Upstream backend repo / submodule
+backend/
+
+# Logs
+*.log
+
+# Python build artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+.venv/

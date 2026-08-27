@@ -1,0 +1,7 @@
+# Direct dependencies — all versions pinned with ==
+python-dotenv==1.2.3
+requests==2.34.2
+hypothesis==6.165.10
+pytest==9.1.1
+playwright==1.62.0
+beautifulsoup4==4.15.0
