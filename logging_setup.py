@@ -27,9 +27,9 @@ def setup_logging(log_level: str) -> None:
     handler.setLevel(level)
 
     formatter = logging.Formatter(
-        fmt="%(asctime)sZ %(levelname)s %(message)s",
-        datefmt="%Y-%m-%dT%H:%M:%S",
-    )
+    "%(asctime)s | %(levelname)s | %(message)s",
+    datefmt="%H:%M:%S",
+)
     formatter.converter = time.gmtime  # Use UTC time
     handler.setFormatter(formatter)
 

@@ -29,7 +29,7 @@ def run_cycle(config: Config) -> int:
     Returns the count of new listings found (0 on error or no new listings).
     """
     cycle_start = datetime.now(timezone.utc)
-    _log.info("Cycle started at %s", cycle_start.isoformat())
+    _log.info("Ciklus započinje")
 
     # 1. Read ID store
     stored_ids = read_ids()
@@ -54,15 +54,15 @@ def run_cycle(config: Config) -> int:
     if is_first_run and not listings:
         write_ids(set(), [])
         _log.info(
-            "First run: zero listings found; wrote empty baseline to ID store. "
-            "Baseline could not be established — will retry next cycle."
+            "Prvo izvršavanje: pronađeno nula oglasa; zapisan prazan baseline u ID store",
+            "Nije moguće uspostaviti baseline - pokušaj u idućem ciklusu",
         )
         return 0
 
     # 5. Handle zero listings on a non-first-run cycle (Req 2.6 / 6.7):
     #    Log warning, skip ID store update, return 0.
     if not listings:
-        _log.warning("Parser returned zero listings; possible site layout change.")
+        _log.warning("Parser vraća nula oglasa; moguće promjene u layoutu websitea.")
         return 0
 
     # 6. First-run baseline with actual listings (Req 5.1 / 5.2):
@@ -71,7 +71,7 @@ def run_cycle(config: Config) -> int:
         current_ids = [lst["listing_id"] for lst in listings]
         write_ids(set(current_ids), current_ids)
         _log.info(
-            "First run: saved %d baseline IDs. Notifications will begin from the next run.",
+            "Prvo izvršavanje: spremljeno %d baseline IDeva. Obavijesti će početi od idućeg izvršavanja.",
             len(current_ids),
         )
         return 0
@@ -81,12 +81,13 @@ def run_cycle(config: Config) -> int:
 
     if not new_listings:
         # Req 6.3: no new listings — log, skip ID store update
-        _log.info("No new listings detected.")
+        _log.info("Nisu otkriveni novi oglasi.")
         cycle_end = datetime.now(timezone.utc)
-        _log.info("Cycle ended at %s; new listings: 0", cycle_end.isoformat())
+        _log.info("Ciklus je uspješno završen")
+
         return 0
 
-    _log.info("Detected %d new listing(s).", len(new_listings))
+    _log.info("Broj otkrivenih oglasa: %d", len(new_listings))
 
     # 8. Write updated ID store BEFORE notifying — union of stored_ids ∪ current_ids (Req 6.5)
     # Persisting first ensures that even if the Discord call fails or the process
@@ -101,8 +102,7 @@ def run_cycle(config: Config) -> int:
 
     cycle_end = datetime.now(timezone.utc)
     _log.info(
-        "Cycle ended at %s; new listings: %d",
-        cycle_end.isoformat(),
+        "Ciklus je uspješno završen; novi oglasi: %d",
         len(new_listings),
     )
     return len(new_listings)
@@ -121,13 +121,13 @@ def main() -> None:
 
     # Register SIGTERM handler for clean shutdown (Req 8.3)
     def _handle_sigterm(signum, frame):
-        _log.info("Received SIGTERM; shutting down.")
+        _log.info("Zaprimljen SIGTERM; gašenje...")
         sys.exit(0)
 
     signal.signal(signal.SIGTERM, _handle_sigterm)
 
     _log.info(
-        "Monitor started. Check interval: %d minute(s).", config.check_interval_minutes
+        "Praćenje započelo. Interval provjere: %d min.", config.check_interval_minutes
     )
 
     # Polling loop (Req 8.1 / 8.2 / 8.6)
@@ -149,7 +149,7 @@ def main() -> None:
             time.sleep(base_sleep + jitter)
     except KeyboardInterrupt:
         # Req 8.3: clean shutdown on Ctrl-C
-        _log.info("Received KeyboardInterrupt; shutting down.")
+        _log.info("Prekid izvršavanja skripte...")
         sys.exit(0)
 
 

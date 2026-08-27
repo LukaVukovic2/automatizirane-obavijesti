@@ -119,3 +119,44 @@ TELEGRAM_CHAT_ID=123456789
 CHECK_INTERVAL_MINUTES=5
 LOG_LEVEL=INFO
 ```
+
+---
+
+## Adding a New Searcher
+
+The multi-searcher pipeline (`listing_monitor/`) lets you monitor any number of independent Njuškalo searches, each posting to its own Discord channel. Follow these four steps to add a new one:
+
+1. **Create a Discord webhook**
+
+   In the target Discord server, go to **Server Settings → Integrations → Webhooks** and click **New Webhook**. Give it a name (e.g., "Njuškalo Garages"), select the channel where notifications should appear, and copy the webhook URL.
+
+2. **Add the webhook URL to `.env`**
+
+   Open your `.env` file (copy from `.env.example` if you haven't already) and add a new entry with a descriptive name:
+
+   ```dotenv
+   DISCORD_WEBHOOK_GARAGES=https://discord.com/api/webhooks/<id>/<token>
+   ```
+
+3. **Add a new Searcher object to `config.json`**
+
+   Open `config.json` and append a new object to the `searchers` array. The `discord_webhook_env` value must match the variable name you chose in step 2:
+
+   ```json
+   {
+     "id": "garages",
+     "name": "Garages Zagreb",
+     "search_url": "https://www.njuskalo.hr/najam-garaze?geo[locationIds]=1250",
+     "discord_webhook_env": "DISCORD_WEBHOOK_GARAGES"
+   }
+   ```
+
+   Each `id` must be unique across all Searchers — it is used as the key in `previous_ids.json`.
+
+4. **Restart the monitor**
+
+   ```bash
+   python -m listing_monitor.monitor
+   ```
+
+   On the first run the new Searcher will silently baseline the current listings (no notifications sent). From the second run onward, new listings will be posted to the Discord channel you configured.
