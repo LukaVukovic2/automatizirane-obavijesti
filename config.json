@@ -12,6 +12,12 @@
       "name": "Freebies Zagreb",
       "search_url": "https://www.njuskalo.hr/search/?keywords=poklanjam&categoryId=9830&price[max]=1&condition[new]=1&condition[used]=1&geo[locationIds]=1170,1153&adaptedCategoryId=9830&sort=new",
       "discord_webhook_env": "DISCORD_WEBHOOK_FREEBIES"
+    },
+    {
+      "id": "cars",
+      "name": "Cars Zagreb",
+      "search_url": "https://www.njuskalo.hr/auti/citroen-c3?price[max]=3400&geo[locationIds]=1153&yearManufactured[min]=2006&yearManufactured[max]=2012&fuelTypeId=600",
+      "discord_webhook_env": "DISCORD_WEBHOOK_CARS"
     }
   ]
 }

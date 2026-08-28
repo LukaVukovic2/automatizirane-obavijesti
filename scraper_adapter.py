@@ -71,7 +71,7 @@ def fetch_html(search_url: str) -> str:
     with sync_playwright() as p:
         context = p.chromium.launch_persistent_context(
             user_data_dir=_PROFILE_DIR,
-            headless=False,
+            headless=True,
             args=[
                 "--disable-blink-features=AutomationControlled",
             ],
